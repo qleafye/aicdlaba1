@@ -124,9 +124,9 @@ def insertion_sort(arr):
         arr[j + 1] = key
     return arr
 
-'''
 # == з е р н о == tri topora ==
 random.seed(777)
+'''
 # Задаем параметры массива
 array_size = 10000  # размер массива
 min_value = 1  # минимальное значение
@@ -170,16 +170,14 @@ print("merge", end_time - start_time)
 
 # Задаем параметры массива
 array_sizes = []
-for i in range(1,100001, 10000):
+for i in range(1,10001, 1000):
     array_sizes.append(i)  # размеры массивов для тестирования
-min_value = 1
-max_value = 1000000
 
 sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
-def makeplot(size, time, name):
+def makeplot(size, time, name, comment):
     plt.figure(figsize=(20, 6))
     plt.plot(size, time, marker='o', label=name)
-    plt.title('Время выполнения сортировки')
+    plt.title(f'Время выполнения сортировки {comment}')
     plt.xlabel('Размер массива')
     plt.ylabel('Время (секунды)')
     plt.xticks(size)
@@ -187,50 +185,85 @@ def makeplot(size, time, name):
     plt.grid(True)
     plt.show()
 
+min_value = 1
+max_value = 1000000
+
+def sort_massives(random_array):
+        start_time = time.time()
+        insertion_sort(random_array.copy())
+        sort_times['insertion'].append(time.time() - start_time)
+
+
+        start_time = time.time()
+        quicksort(random_array.copy())
+        sort_times['quick'].append(time.time() - start_time)
+
+
+        start_time = time.time()
+        shell_sort(random_array.copy())
+        sort_times['shell'].append(time.time() - start_time)
+
+
+        start_time = time.time()
+        heap_sort(random_array.copy())
+        sort_times['heap'].append(time.time() - start_time)
+
+
+        start_time = time.time()
+        bubble_sort(random_array.copy())
+        sort_times['bubble'].append(time.time() - start_time)
+
+
+        start_time = time.time()
+        merge_sort(random_array.copy())
+        sort_times['merge'].append(time.time() - start_time)
+
+#для мид
 for size in array_sizes:
     random_array = [random.randint(min_value, max_value) for _ in range(size)]
-    start_time = time.time()
-    insertion_sort(random_array.copy())
-    sort_times['insertion'].append(time.time() - start_time)
+    sort_massives(random_array)
 
-
-    start_time = time.time()
-    quicksort(random_array.copy())
-    sort_times['quick'].append(time.time() - start_time)
-
-
-    start_time = time.time()
-    shell_sort(random_array.copy())
-    sort_times['shell'].append(time.time() - start_time)
-
-
-    start_time = time.time()
-    heap_sort(random_array.copy())
-    sort_times['heap'].append(time.time() - start_time)
-
-
-    start_time = time.time()
-    bubble_sort(random_array.copy())
-    sort_times['bubble'].append(time.time() - start_time)
-
-
-    start_time = time.time()
-    merge_sort(random_array.copy())
-    sort_times['merge'].append(time.time() - start_time)
-
-
-# Построение графика
+# Построение графика для всех средних
 for sort_name, times in sort_times.items():
-    makeplot(array_sizes, times, sort_name)
+    makeplot(array_sizes, times, sort_name, "mid")
 
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
 
+# Построение общего графика для всех сортировок
 plt.figure(figsize=(20, 6))
 for sort_name, times in sort_times.items():
-    plt.plot(array_sizes, times, marker='o', label=sort_name)
-plt.title('Время выполнения различных сортировок')
+    plt.plot(array_sizes[:len(times)], times, marker='o', label=sort_name)
+plt.title('Время выполнения различных сортировок для среднего случая')
 plt.xlabel('Размер массива')
 plt.ylabel('Время (секунды)')
 plt.xticks(array_sizes)
 plt.grid(True)
+plt.legend()
 plt.show()
+
+#для best
+for size in array_sizes:
+    random_array = [random.randint(min_value, max_value) for _ in range(size)]
+    random_array.sort()
+    sort_massives(random_array)
+
+for sort_name, times in sort_times.items():
+    makeplot(array_sizes, times, sort_name, "best")
+
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+
+#для worst
+for size in array_sizes:
+    random_array = [random.randint(min_value, max_value) for _ in range(size)]
+    random_array.sort(reverse=True)
+    sort_massives(random_array)
+
+for sort_name, times in sort_times.items():
+    makeplot(array_sizes, times, sort_name, "worst")
+
+
+
+
+
+
 
