@@ -1,6 +1,10 @@
 import random
 import time
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+
 
 def bubble_sort(arr):
     n = len(arr)
@@ -174,6 +178,7 @@ for i in range(1,10001, 1000):
     array_sizes.append(i)  # размеры массивов для тестирования
 
 sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+'''
 def makeplot(size, time, name, comment):
     plt.figure(figsize=(20, 6))
     plt.plot(size, time, marker='o', label=name)
@@ -181,6 +186,27 @@ def makeplot(size, time, name, comment):
     plt.xlabel('Размер массива')
     plt.ylabel('Время (секунды)')
     plt.xticks(size)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    '''
+
+def makeplot(_sizes, _time_values, name, comment):
+    x = np.array(_sizes)
+    y = np.array(_time_values)
+
+    poly = PolynomialFeatures(degree=2, include_bias=False)
+    poly_features = poly.fit_transform(x.reshape(-1, 1))
+    poly_reg_model = LinearRegression()
+    poly_reg_model.fit(poly_features, y)
+    y_predicted = poly_reg_model.predict(poly_features)
+
+    plt.title(f'Время выполнения сортировки {comment}')
+    plt.xlabel('Размер массива')
+    plt.ylabel('Время (секунды)')
+
+    plt.scatter(x, y, c = "red")
+    plt.plot(x, y_predicted, c = "blue", label = name)
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -223,16 +249,24 @@ for size in array_sizes:
     random_array = [random.randint(min_value, max_value) for _ in range(size)]
     sort_massives(random_array)
 
+
+
 # Построение графика для всех средних
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "mid")
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
-
 # Построение общего графика для всех сортировок
 plt.figure(figsize=(20, 6))
 for sort_name, times in sort_times.items():
-    plt.plot(array_sizes[:len(times)], times, marker='o', label=sort_name)
+    x = np.array(array_sizes)
+    y = np.array(times)
+    poly = PolynomialFeatures(degree=2, include_bias=False)
+    poly_features = poly.fit_transform(x.reshape(-1, 1))
+    poly_reg_model = LinearRegression()
+    poly_reg_model.fit(poly_features, y)
+    y_predicted = poly_reg_model.predict(poly_features)
+    plt.plot(x, y_predicted , label = sort_name)
+
 plt.title('Время выполнения различных сортировок для среднего случая')
 plt.xlabel('Размер массива')
 plt.ylabel('Время (секунды)')
@@ -240,6 +274,15 @@ plt.xticks(array_sizes)
 plt.grid(True)
 plt.legend()
 plt.show()
+
+
+
+
+
+
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+
+
 
 #для best
 for size in array_sizes:
