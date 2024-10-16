@@ -304,6 +304,19 @@ for size in array_sizes:
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "worst")
 
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+#для almost sort
+ninetenmassive = []
+for size in array_sizes:
+    random_array = [random.randint(min_value, max_value) for _ in range(int(size*0.9))]
+    random_array.sort()
+    random_array1 = [random.randint(min_value, max_value) for _ in range(int(size*0.1))]
+    random_array1.sort(reverse=True)
+    ninetenmassive = random_array + random_array1
+    sort_massives(ninetenmassive)
+for sort_name, times in sort_times.items():
+    makeplot(array_sizes, times, sort_name, "90|10")
+
 
 
 
