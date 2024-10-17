@@ -95,6 +95,62 @@ def shell_sort(arr): #последовательность шелла, хаба�
             arr[j] = temp
         gap //= 2
 
+
+def shell_hibb_sort(arr):
+    n = len(arr)
+
+    # Генерация последовательности Хиббарда
+    gaps = []
+    k = 1
+    while True:
+        gap = (2 ** k) - 1
+        if gap >= n:
+            break
+        gaps.append(gap)
+        k += 1
+
+    # Сортировка по каждому шагу из последовательности Хиббарда
+    for gap in reversed(gaps):
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+
+
+def shell_prap_sort(arr):
+    n = len(arr)
+
+    # Генерация последовательности Пратта
+    gaps = []
+    i = 0
+    while True:
+        j = 0
+        while True:
+            gap = (2 ** i) * (3 ** j)
+            if gap >= n:
+                break
+            gaps.append(gap)
+            j += 1
+        if (2 ** i) >= n:
+            break
+        i += 1
+
+    # Удаляем дубликаты и сортируем шаги
+    gaps = sorted(set(gaps))
+
+    # Сортировка по каждому шагу из последовательности Пратта
+    for gap in reversed(gaps):
+        for k in range(gap, n):
+            temp = arr[k]
+            j = k
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+
 def quicksort(nums):
     if len(nums) <= 1:
         return nums
@@ -177,7 +233,7 @@ array_sizes = []
 for i in range(1,10001, 1000):
     array_sizes.append(i)  # размеры массивов для тестирования
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 '''
 def makeplot(size, time, name, comment):
     plt.figure(figsize=(20, 6))
@@ -228,6 +284,14 @@ def sort_massives(random_array):
         start_time = time.time()
         shell_sort(random_array.copy())
         sort_times['shell'].append(time.time() - start_time)
+
+        start_time = time.time()
+        shell_hibb_sort(random_array.copy())
+        sort_times['shell_hibb'].append(time.time() - start_time)
+
+        start_time = time.time()
+        shell_prap_sort(random_array.copy())
+        sort_times['shell_prap'].append(time.time() - start_time)
 
 
         start_time = time.time()
@@ -280,7 +344,7 @@ plt.show()
 
 
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 
 
 
@@ -293,7 +357,7 @@ for size in array_sizes:
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "best")
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 
 #для worst
 for size in array_sizes:
@@ -304,7 +368,7 @@ for size in array_sizes:
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "worst")
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 #для almost sort
 ninetenmassive = []
 for size in array_sizes:
@@ -314,6 +378,7 @@ for size in array_sizes:
     random_array1.sort(reverse=True)
     ninetenmassive = random_array + random_array1
     sort_massives(ninetenmassive)
+
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "90|10")
 
