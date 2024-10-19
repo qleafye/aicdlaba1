@@ -145,22 +145,15 @@ def shell_prap_sort(arr):
                 j -= gap
             arr[j] = temp
 
-def quicksort(nums):
-    if len(nums) <= 1:
-        return nums
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
     else:
-        q = random.choice(nums)
-        s_nums = []
-        m_nums = []
-        e_nums = []
-        for n in nums:
-            if n < q:
-                s_nums.append(n)
-            elif n > q:
-                m_nums.append(n)
-            else:
-                e_nums.append(n)
-        return quicksort(s_nums) + e_nums + quicksort(m_nums)
+        pivot = arr[len(arr) // 2]  # Выбираем опорный элемент
+        left = [x for x in arr if x < pivot]  # Все элементы меньше опорного
+        middle = [x for x in arr if x == pivot]  # Все элементы, равные опорному
+        right = [x for x in arr if x > pivot]  # Все элементы больше опорного
+        return quicksort(left) + middle + quicksort(right)
 
 
 def insertion_sort(arr):

@@ -51,12 +51,134 @@ end_time = time.time()
 print("merge", end_time - start_time)
 '''
 
+def square(x):
+    return x ** 2
+
+def line(x):
+    return x
+
+def nlognsqaure(x):
+    return x* np.log(x) ** 2
+
+def nlogn(x):
+    return x * np.log(x)
+
+def n32(x):
+    return x**(3/2)
+def n54(x):
+    return x**(5/4)
+def n43(x):
+    return x**(4/3)
+
+x = np.linspace(1, 100000, 500)
+'''
+y = square(x)
+plt.plot(x, y)
+plt.title('Время выполнения с квадратичной ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+
+y = line(x)
+plt.plot(x, y)
+plt.title('Время выполнения с линейной ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+
+y = n32(x)
+plt.plot(x, y)
+plt.title('Время выполнения с n^3/2 ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+
+y = n43(x)
+plt.plot(x, y)
+plt.title('Время выполнения с n^4/3 ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+
+y = n54(x)
+plt.plot(x, y)
+plt.title('Время выполнения с n^5/4 ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+
+y = nlogn(x)
+plt.plot(x, y)
+plt.title('Время выполнения с nlogn ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+
+y = nlognsqaure(x)
+plt.plot(x, y)
+plt.title('Время выполнения с nlogn ^ 2 ассимптоткой')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+plt.show()
+'''
+
+functions = [
+    (square, 'O(n^2)', 'Время выполнения с квадратичной асимптоткой'),
+    (line, 'O(n)', 'Время выполнения с линейной асимптоткой'),
+    (n32, 'O(n^(3/2))', 'Время выполнения с n^(3/2) асимптоткой'),
+    (n43, 'O(n^(4/3))', 'Время выполнения с n^(4/3) асимптоткой'),
+    (n54, 'O(n^(5/4))', 'Время выполнения с n^(5/4) асимптоткой'),
+    (nlogn, 'O(n log n)', 'Время выполнения с n log n асимптоткой'),
+    (nlognsqaure, 'O(n log^2 n)', 'Время выполнения с n log^2 n асимптоткой')
+]
+
+# Проходим по каждой функции и строим отдельный график
+for func, label, title in functions:
+    plt.figure(figsize=(10, 6))
+
+    # Вычисляем y значения
+    y = func(x)
+
+    plt.plot(x, y, label=label)
+    plt.title(title)
+    plt.xlabel('Размер массива')
+    plt.ylabel('Время (условные единицы)')
+    #plt.ylim(0, max(y) * 1.1)  # Устанавливаем лимит по оси Y, чтобы не было обрезки
+    plt.grid()
+    plt.legend()
+    plt.show()
+
+plt.figure(figsize=(12, 8))
+
+# Параметры графика
+plt.ylim(0, 1e6)  # Ограничение по оси Y, чтобы лучше визуализировать
+plt.xscale('log')  # Логарифмическая шкала по оси X
+
+# Добавляем каждую функцию на график
+plt.plot(x, square(x), label='O(n^2)')
+plt.plot(x, line(x), label='O(n)')
+plt.plot(x, n32(x), label='O(n^(3/2))')
+plt.plot(x, n43(x), label='O(n^(4/3))')
+plt.plot(x, n54(x), label='O(n^(5/4))')
+plt.plot(x, nlogn(x), label='O(n log n)')
+plt.plot(x, nlognsqaure(x), label='O(n log^2 n)')
+
+# Настройка графика
+plt.title('Ассимптотическая сложность различных алгоритмов сортировки')
+plt.xlabel('Размер массива (логарифмическая шкала)')
+plt.ylabel('Время выполнения (секунды)')
+plt.legend()
+plt.grid()
+plt.show()
+
+
+
 # Задаем параметры массива
 array_sizes = []
-for i in range(1,10001, 1000):
+for i in range(1,20001, 1000):
     array_sizes.append(i)  # размеры массивов для тестирования
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 
 min_value = 1
 max_value = 1000000
@@ -89,6 +211,10 @@ def sort_massives(random_array):
         heap_sort(random_array.copy())
         sort_times['heap'].append(time.time() - start_time)
 
+        start_time = time.time()
+        selection_sort(random_array.copy())
+        sort_times['selection'].append(time.time() - start_time)
+
 
         start_time = time.time()
         bubble_sort(random_array.copy())
@@ -110,7 +236,7 @@ for size in array_sizes:
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "mid")
 
-# Построение общего графика для всех сортировок
+# Построение общего графика для всех средних
 plt.figure(figsize=(20, 6))
 for sort_name, times in sort_times.items():
     x = np.array(array_sizes)
@@ -135,7 +261,7 @@ plt.show()
 
 
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 
 
 
@@ -148,7 +274,7 @@ for size in array_sizes:
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "best")
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 
 #для worst
 for size in array_sizes:
@@ -159,7 +285,7 @@ for size in array_sizes:
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "worst")
 
-sort_times = {'insertion': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
+sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 #для almost sort
 ninetenmassive = []
 for size in array_sizes:
