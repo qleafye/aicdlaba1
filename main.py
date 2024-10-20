@@ -70,7 +70,7 @@ def n54(x):
 def n43(x):
     return x**(4/3)
 
-x = np.linspace(1, 100000, 500)
+x = np.linspace(1, 50000, 500)
 '''
 y = square(x)
 plt.plot(x, y)
@@ -175,7 +175,7 @@ plt.show()
 
 # Задаем параметры массива
 array_sizes = []
-for i in range(1,20001, 1000):
+for i in range(1,50001, 1000):
     array_sizes.append(i)  # размеры массивов для тестирования
 
 sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
@@ -225,11 +225,22 @@ def sort_massives(random_array):
         merge_sort(random_array.copy())
         sort_times['merge'].append(time.time() - start_time)
 
+plots_data = {sort_name: {'average': [], 'best': [], 'worst': [], 'almost': []} for sort_name in sort_times.keys()}
+
 #для мид
 for size in array_sizes:
     random_array = [random.randint(min_value, max_value) for _ in range(size)]
     sort_massives(random_array)
 
+plots_data['insertion']['average'].append((sort_times['insertion']))
+plots_data['quick']['average'].append((sort_times['quick']))
+plots_data['shell']['average'].append((sort_times['shell']))
+plots_data['shell_prap']['average'].append((sort_times['shell_prap']))
+plots_data['shell_hibb']['average'].append((sort_times['shell_hibb']))
+plots_data['heap']['average'].append((sort_times['heap']))
+plots_data['bubble']['average'].append((sort_times['bubble']))
+plots_data['merge']['average'].append((sort_times['merge']))
+plots_data['selection']['average'].append((sort_times['selection']))
 
 
 # Построение графика для всех средних
@@ -247,6 +258,7 @@ for sort_name, times in sort_times.items():
     poly_reg_model.fit(poly_features, y)
     y_predicted = poly_reg_model.predict(poly_features)
     plt.plot(x, y_predicted , label = sort_name)
+
 
 plt.title('Время выполнения различных сортировок для среднего случая')
 plt.xlabel('Размер массива')
@@ -271,6 +283,17 @@ for size in array_sizes:
     random_array.sort()
     sort_massives(random_array)
 
+plots_data['insertion']['best'].append((sort_times['insertion']))
+plots_data['quick']['best'].append((sort_times['quick']))
+plots_data['shell']['best'].append((sort_times['shell']))
+plots_data['shell_prap']['best'].append((sort_times['shell_prap']))
+plots_data['shell_hibb']['best'].append((sort_times['shell_hibb']))
+plots_data['heap']['best'].append((sort_times['heap']))
+plots_data['bubble']['best'].append((sort_times['bubble']))
+plots_data['merge']['best'].append((sort_times['merge']))
+plots_data['selection']['best'].append((sort_times['selection']))
+
+
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "best")
 
@@ -282,8 +305,20 @@ for size in array_sizes:
     random_array.sort(reverse=True)
     sort_massives(random_array)
 
+plots_data['insertion']['worst'].append((sort_times['insertion']))
+plots_data['quick']['worst'].append((sort_times['quick']))
+plots_data['shell']['worst'].append((sort_times['shell']))
+plots_data['shell_prap']['worst'].append((sort_times['shell_prap']))
+plots_data['shell_hibb']['worst'].append((sort_times['shell_hibb']))
+plots_data['heap']['worst'].append((sort_times['heap']))
+plots_data['bubble']['worst'].append((sort_times['bubble']))
+plots_data['merge']['worst'].append((sort_times['merge']))
+plots_data['selection']['worst'].append((sort_times['selection']))
+
+
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "worst")
+
 
 sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
 #для almost sort
@@ -296,12 +331,73 @@ for size in array_sizes:
     ninetenmassive = random_array + random_array1
     sort_massives(ninetenmassive)
 
+plots_data['insertion']['almost'].append((sort_times['insertion']))
+plots_data['quick']['almost'].append((sort_times['quick']))
+plots_data['shell']['almost'].append((sort_times['shell']))
+plots_data['shell_prap']['almost'].append((sort_times['shell_prap']))
+plots_data['shell_hibb']['almost'].append((sort_times['shell_hibb']))
+plots_data['heap']['almost'].append((sort_times['heap']))
+plots_data['bubble']['almost'].append((sort_times['bubble']))
+plots_data['merge']['almost'].append((sort_times['merge']))
+plots_data['selection']['almost'].append((sort_times['selection']))
+
+
 for sort_name, times in sort_times.items():
     makeplot(array_sizes, times, sort_name, "90|10")
 
 
+#делаем графики ^_^
+
+print(plots_data['insertion'])
+
+for sort_name, sort_cases in plots_data.items():
+    for sort_type, timings in sort_cases.items():
+        print(f'Sort: {sort_name}, Case: {sort_type}, Timings: {timings}')
 
 
+for sort_name, sort_cases in plots_data.items():
+
+    for sort_type, timings in sort_cases.items():
+        x = np.array(array_sizes)
+        print(sort_type)
+        y = np.array(timings).flatten() # Берем данные для текущей сортировки и типа
+        print(y)
+
+        # Полиномиальная регрессия
+        poly = PolynomialFeatures(degree=2, include_bias=False)
+        poly_features = poly.fit_transform(x.reshape(-1, 1))
+        poly_reg_model = LinearRegression()
+        poly_reg_model.fit(poly_features, y)
+        y_predicted = poly_reg_model.predict(poly_features)
+
+        # Построение графика
+        plt.plot(x, y_predicted, label=f'{sort_name} - {sort_type}')
+
+# Настройка графика
+    plt.title('Время выполнения различных сортировок для разных случаев')
+    plt.xlabel('Размер массива')
+    plt.ylabel('Время (секунды)')
+    plt.xticks(array_sizes)
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 
 
+x = np.array(array_sizes)
+y = (plots_data['insertion']['worst'][0])
+poly = PolynomialFeatures(degree=2, include_bias=False)
+poly_features = poly.fit_transform(x.reshape(-1, 1))
+poly_reg_model = LinearRegression()
+poly_reg_model.fit(poly_features, y)
+y_predicted = poly_reg_model.predict(poly_features)
+
+plt.title(f'Время выполнения сортировки хуй')
+plt.xlabel('Размер массива')
+plt.ylabel('Время (секунды)')
+
+plt.scatter(x, y, c = "red")
+plt.plot(x, y_predicted, c = "blue", label = "вэфвэф")
+plt.legend()
+plt.grid(True)
+plt.show()
 
