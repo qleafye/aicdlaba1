@@ -389,7 +389,7 @@ for sort_name, sort_cases in plots_data.items():
     plt.title('Время выполнения различных сортировок для разных случаев')
     plt.xlabel('Размер массива * 0.1')
     plt.ylabel('Время (секунды)')
-    plt.xticks(array_sizess)
+    plt.xticks(array_sizes)
     plt.grid(True)
     plt.legend()
     plt.show()
