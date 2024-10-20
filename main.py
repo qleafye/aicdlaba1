@@ -175,7 +175,7 @@ plt.show()
 
 # Задаем параметры массива
 array_sizes = []
-for i in range(1,50001, 1000):
+for i in range(1,20002, 1000):
     array_sizes.append(i)  # размеры массивов для тестирования
 
 sort_times = {'insertion': [], 'selection': [], 'quick': [], 'shell': [], 'shell_prap':[], "shell_hibb": [], 'heap': [], 'bubble': [], 'merge': []}
@@ -262,7 +262,7 @@ for sort_name, times in sort_times.items():
 
 plt.title('Время выполнения различных сортировок для среднего случая')
 plt.xlabel('Размер массива')
-plt.ylabel('Время (секунды)')
+plt.ylabel('Время (условные единицы)')
 plt.xticks(array_sizes)
 plt.grid(True)
 plt.legend()
@@ -349,19 +349,22 @@ for sort_name, times in sort_times.items():
 #делаем графики ^_^
 
 print(plots_data['insertion'])
-
+i = 0
 for sort_name, sort_cases in plots_data.items():
     for sort_type, timings in sort_cases.items():
-        print(f'Sort: {sort_name}, Case: {sort_type}, Timings: {timings}')
+        print(f'Sort: {sort_name}, Case: {sort_type}', )
+        for time in timings[0]:
+            print("Размер массива:", array_sizes[i], "Время сортировки:", time)
+            i += 1
+        i = 0
+        print(' ')
 
 
 for sort_name, sort_cases in plots_data.items():
 
     for sort_type, timings in sort_cases.items():
         x = np.array(array_sizes)
-        print(sort_type)
         y = np.array(timings).flatten() # Берем данные для текущей сортировки и типа
-        print(y)
 
         # Полиномиальная регрессия
         poly = PolynomialFeatures(degree=2, include_bias=False)
