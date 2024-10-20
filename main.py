@@ -70,7 +70,7 @@ def n54(x):
 def n43(x):
     return x**(4/3)
 
-x = np.linspace(1, 50000, 500)
+x = np.linspace(1, 20001, 500)
 '''
 y = square(x)
 plt.plot(x, y)
@@ -360,8 +360,13 @@ for sort_name, sort_cases in plots_data.items():
         print(' ')
 
 
-for sort_name, sort_cases in plots_data.items():
+array_sizess = []
+for i in range(1, 20002, 1000):
+    array_sizess.append(i*0.1)
+  # размеры массивов для тестирования
 
+for sort_name, sort_cases in plots_data.items():
+    plt.figure(figsize=(15, 6))
     for sort_type, timings in sort_cases.items():
         x = np.array(array_sizes)
         y = np.array(timings).flatten() # Берем данные для текущей сортировки и типа
@@ -374,33 +379,21 @@ for sort_name, sort_cases in plots_data.items():
         y_predicted = poly_reg_model.predict(poly_features)
 
         # Построение графика
+
         plt.plot(x, y_predicted, label=f'{sort_name} - {sort_type}')
+
+
+
 
 # Настройка графика
     plt.title('Время выполнения различных сортировок для разных случаев')
-    plt.xlabel('Размер массива')
+    plt.xlabel('Размер массива * 0.1')
     plt.ylabel('Время (секунды)')
-    plt.xticks(array_sizes)
+    plt.xticks(array_sizess)
     plt.grid(True)
     plt.legend()
     plt.show()
 
 
-x = np.array(array_sizes)
-y = (plots_data['insertion']['worst'][0])
-poly = PolynomialFeatures(degree=2, include_bias=False)
-poly_features = poly.fit_transform(x.reshape(-1, 1))
-poly_reg_model = LinearRegression()
-poly_reg_model.fit(poly_features, y)
-y_predicted = poly_reg_model.predict(poly_features)
 
-plt.title(f'Время выполнения сортировки хуй')
-plt.xlabel('Размер массива')
-plt.ylabel('Время (секунды)')
-
-plt.scatter(x, y, c = "red")
-plt.plot(x, y_predicted, c = "blue", label = "вэфвэф")
-plt.legend()
-plt.grid(True)
-plt.show()
 

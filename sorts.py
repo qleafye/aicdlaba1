@@ -1,12 +1,24 @@
 import random
 
+
 def bubble_sort(arr):
     n = len(arr)
+
+    # Внешний цикл, проходящий по всем элементам массива
     for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
+        # Флаг, который отслеживает наличие перестановок
+        swapped = False
+
+        # Внутренний цикл, сравнивающий соседние элементы
+        for j in range(0, n - i - 1):
+            # Если текущий элемент больше следующего, меняем их местами
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True  # Указываем, что была произведена перестановка
+
+        # Если не было ни одной перестановки, массив отсортирован
+        if not swapped:
+            break
 
 def selection_sort(arr):
     for i in range(len(arr)):
